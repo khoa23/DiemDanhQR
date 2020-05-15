@@ -42,7 +42,7 @@ public class XacThucDiemDanhActivity extends AppCompatActivity {
                 if (con == null) {
                     z = "Không thể kết nối với Server"; //Tiếng Việt :D
                 } else {
-                    String query = "select * from LICHHOC where MAQR='" + editTextmaxacthuc.getText() + "'";
+                    String query = "select * from LICHHOC where MAXACNHAN='" + editTextmaxacthuc.getText() + "'";
                     //trên đây là câu truy vấn
                     Statement stmt = con.createStatement(); //blah blah blah
                     resultSet = stmt.executeQuery(query); //thực thi và trả về một cục ResultSet, nó là gì thì Google, tui chịu

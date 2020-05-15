@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Dang Nhap"
+            android:text="ĐĂNG NHẬP"
             android:textSize="30dp" />
         <ProgressBar
             android:id="@+id/pgbLoading"
@@ -36,7 +36,7 @@
             android:hint="Tên đăng nhập"
             android:inputType="text"
 
-            android:text="DTTT" />
+            android:text="1611060605" />
 
         <EditText
             android:id="@+id/edtPassword"
@@ -45,7 +45,7 @@
             android:hint="Mật khẩu"
             android:inputType="textPassword"
 
-            android:text="123456" />
+            android:text="1611060605" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
