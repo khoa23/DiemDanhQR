@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".XacThucDiemDanhActivity"></activity>
+        <activity android:name=".ChonMonHocActivity"></activity>
+        <activity android:name=".XacThucDiemDanhActivity" />
         <activity android:name=".ManHinhChinhActivity" />
         <activity android:name=".UserActivity" />
         <activity android:name=".MainActivity">

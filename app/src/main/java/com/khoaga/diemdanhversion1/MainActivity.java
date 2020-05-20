@@ -71,6 +71,7 @@ public class MainActivity extends Activity {
 
         String z = ""; //cái này dùng để hứng kết quả khi chạy hàm truy vấn tới SQL Server
         String hoten=""; //Cái này sẽ chứa họ tên đầy đủ khi truy vấn được
+        String idnguoidung=""; //lấy id người dùng
         Boolean isSuccess = false; //Biến nhận biết là có truy vấn thành công hay không
 
         String userid = edtUserName.getText().toString(); // biến cục bộ, xài cục bộ
@@ -99,7 +100,9 @@ public class MainActivity extends Activity {
                     if(resultSet.next())//nếu trong resultset không null thì sẽ trả về True
                     {
                         hoten=resultSet.getString("TENNGUOIDUNG");//Hàm lấy giá trị của tên cột (trường: field name) truyền vào
-                        z = "Hi, " + hoten; //Hey, i'm TONA
+                        z = "Xin chào, " + hoten; //Hey, i'm TONA
+                        //lấy id người dùng
+                        idnguoidung=resultSet.getString("IDNGUOIDUNG"); //lấy giá trị cột IDNGUOIDUNG
                         //tvResult.setText(hoten);
                         isSuccess=true; //Oánh dấu chủ quyền, làm dấu thôi, để biết là hàm nó chạy tới đây, xíu mình dùng biến này kiểm tra coi thử chạy tới đây hay không đó mà, chạy tới đây nghĩa là thành công rồi đó.
                         con.close();//Đấm vỡ mồm SERVER xong thì phải băng bó cho nó.
@@ -127,17 +130,20 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(String r) {// sau khi tiến trình kết thúc thì sẽ gọi tới hàm này
-            pgbLoading.setVisibility(View.GONE);//Tắt cái cục xoay xoay đi
+            pgbLoading.setVisibility(View.VISIBLE);//Bật cái cục xoay xoay
             Toast.makeText(MainActivity.this,r,Toast.LENGTH_SHORT).show(); // cái r chính là cái mà nó lấy từ cái hàm doInBackground(String... params), hàm này return z (String), nó sẽ quăng qua hàm này để thực hiện cái bên trong
             if(isSuccess) {//kiểm tra chủ quyền của mình có tới vị trí đánh dấu nãy không :D
                 Toast.makeText(MainActivity.this,r,Toast.LENGTH_SHORT).show();
 
-                Intent intent= new Intent(MainActivity.this, ManHinhChinhActivity.class);//tạo ra một "gói" Intent gửi từ this đến UserActivity.class
+                Intent intent= new Intent(MainActivity.this, ManHinhChinhActivity.class);//tạo ra một "gói" Intent gửi từ this đến ManHinhChinhActivity.class
                 //setContentView(android.view.View);
                 intent.putExtra("TENDANGNHAP",userid);//nhét cái userid vô intent và đặt khóa là USERNAME
                 intent.putExtra("MATKHAU",password);//như trên
                 intent.putExtra("TENNGUOIDUNG",hoten);//như rứa
+                intent.putExtra("IDNGUOIDUNG",idnguoidung);
                 startActivityForResult(intent,CHAN_PW_CODE);//gửi đi, có đợi trả về, nếu trả về sẽ chạy cái hồi nãy nhấn F8
+
+
                 //startActivity(intent); kiểu này sẽ không đợi trả về
                 //intent
             }

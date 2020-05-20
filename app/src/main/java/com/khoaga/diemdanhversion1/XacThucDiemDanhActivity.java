@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.Connection;
@@ -18,25 +19,31 @@ public class XacThucDiemDanhActivity extends AppCompatActivity {
     private Button buttonXacThuc;
     ResultSet resultSet;
     EditText editTextmaxacthuc;
+    TextView tvIDNguoiDung;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_xac_thuc_diem_danh);
 
         buttonXacThuc = (Button)findViewById(R.id.btnXacThuc);
-
         buttonXacThuc.setOnClickListener(xacthuc);
+
+        //tvIDNguoiDung = (TextView)findViewById(R.id.textViewIDNguoiDung);
+        String idnguoidung = getIntent().getStringExtra("IDNGUOIDUNG");
+        //xuất ra màn hình id //test
+        //tvIDNguoiDung.setText(idnguoidung);
+
     }
 
     private View.OnClickListener xacthuc = new View.OnClickListener() {
         public void onClick(View v) {
             // so sanh ma qr
-
-            //truy vấn mã xác thực trong database
-            //chưa có cột mã xác thực nên lấy tạm mã qr
+            //so sánh mã xác thực trong database
             String z = "";
             Boolean isSuccess = false; //Biến nhận biết là có truy vấn thành công hay không
             editTextmaxacthuc = (EditText)findViewById(R.id.editTextMaXacThuc);
+
             try {
                 Connection con = SERVER.Connect(); //khởi tạo kết nối tới server, SERVER chính là class riêng, tìm trong table java
                 if (con == null) {
@@ -53,9 +60,13 @@ public class XacThucDiemDanhActivity extends AppCompatActivity {
                         con.close();
                         //lưu tên và thông tin vào database nếu mã đúng
 
+
+
                         // chuyen man hinh neu ĐÚNG
                         Intent intent = new Intent(XacThucDiemDanhActivity.this, ManHinhChinhActivity.class);
                         startActivity(intent);
+
+
                         Toast.makeText(XacThucDiemDanhActivity.this, "Điểm danh thành công!", Toast.LENGTH_LONG).show();
                     }
                     else
