@@ -42,9 +42,9 @@ public class ManHinhChinhActivity extends AppCompatActivity {
         buttonScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //String idnguoidung = getIntent().getStringExtra("IDNGUOIDUNG");
+                String idnguoidung = getIntent().getStringExtra("IDNGUOIDUNG");
                 Intent intent = new Intent(ManHinhChinhActivity.this, ChonMonHocActivity.class);
-                //intent.putExtra("IDNGUOIDUNG", idnguoidung);
+                intent.putExtra("IDNGUOIDUNG", idnguoidung);
                 startActivity(intent);
             }
         });

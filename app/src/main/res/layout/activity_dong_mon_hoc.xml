@@ -20,22 +20,31 @@
         android:layout_alignParentStart="true"/>
 
     <TextView
-        android:id="@+id/textName"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:id="@+id/textViewTenMonHoc"
+        android:layout_width="156dp"
+        android:layout_height="49dp"
         android:layout_alignBottom="@+id/imageView"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginEnd="84dp"
         android:layout_toRightOf="@+id/imageView"
         android:gravity="center|left"
-        android:maxLength="30"
-        android:text="menu name"
+        android:maxLength="40"
+        android:text="name"
         android:textColor="@color/colorPrimary"
-        android:textSize="20sp"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.128"
+        tools:layout_editor_absoluteY="2dp" />
+
+    <TextView
+        android:id="@+id/textViewIDLichHoc"
+        android:layout_width="48dp"
+        android:layout_height="35dp"
+        android:text="id"
+        android:textSize="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/textName"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        tools:layout_editor_absoluteY="16dp" />
+        tools:layout_editor_absoluteY="10dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
