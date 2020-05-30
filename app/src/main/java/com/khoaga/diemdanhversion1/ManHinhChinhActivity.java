@@ -3,7 +3,6 @@ package com.khoaga.diemdanhversion1;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,10 +15,11 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ManHinhChinhActivity extends AppCompatActivity implements View.OnClickListener{
     //View Objects
@@ -31,6 +31,10 @@ public class ManHinhChinhActivity extends AppCompatActivity implements View.OnCl
     TextView tvIDNguoiDung;
     ResultSet resultSet;
 
+    //lấy ngày giờ
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd HHmmss");
+    String currentDateandTime = sdf.format(new Date());
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +42,6 @@ public class ManHinhChinhActivity extends AppCompatActivity implements View.OnCl
 
         //View objects
         buttonScan = (Button) findViewById(R.id.btnDiemDanh);
-        //textViewName = (TextView) findViewById(R.id.textViewName);
-        //textViewAddress = (TextView) findViewById(R.id.textViewAddress);
 
         //intializing scan object
         qrScan = new IntentIntegrator(this);
@@ -71,11 +73,8 @@ public class ManHinhChinhActivity extends AppCompatActivity implements View.OnCl
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
-        //tvIDNguoiDung = (TextView)findViewById(R.id.textView4);
         String idnguoidung = getIntent().getStringExtra("IDNGUOIDUNG");
-        //xuất ra màn hình id //test
-        //tvIDNguoiDung.setText(idnguoidung);
-
+        int id = Integer.parseInt(idnguoidung);
         if (result != null) {
             //if qrcode has nothing in it
             if (result.getContents() == null) {
@@ -85,9 +84,6 @@ public class ManHinhChinhActivity extends AppCompatActivity implements View.OnCl
                 try {
                     //converting the data to json
                     JSONObject obj = new JSONObject(result.getContents());
-                    //setting values to textviews
-                    //textViewName.setText(obj.getString("name"));
-                    //textViewAddress.setText(obj.getString("address"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                     //if control comes here
@@ -102,14 +98,14 @@ public class ManHinhChinhActivity extends AppCompatActivity implements View.OnCl
 
                     String[] parts = GetQR.split("-",3); //cắt chuối mã QR, ngăn bởi -, lấy 2 đoạn đầu, tăng đoạn nhớ chỉnh limit
 
-                    String part0 = parts[0];//đoạn 0
-                    String part1= parts[1];//đoạn 1
+                    String part0 = parts[0];//đoạn 0 BUOITHU
+                    String part1= parts[1];//đoạn 1 IDLOPMH
+                    int idlopmh = Integer.parseInt(part1);
                     String part2 = parts[2];//đoạn 2
                     //String part3 = parts[3];//đoạn 3
 
                     //hiện mã qr để quét ra text
-                    UserId.setText(part0+"\n"+part1+"   "+part2);
-
+                    UserId.setText(part0+"\n"+idlopmh+"   "+part2);
                     UserId = findViewById(R.id.textView4);
 
                     String z = "";
@@ -119,7 +115,7 @@ public class ManHinhChinhActivity extends AppCompatActivity implements View.OnCl
                         if (con == null) {
                             z = "Không thể kết nối với Server"; //Tiếng Việt :D
                         } else {
-                            String query = "select * from LICHHOC where MAQR='" + GetQR + "'";
+                            String query = "select * from BUOIHOC where MAQR='" + GetQR + "'";
                             //trên đây là câu truy vấn
                             Statement stmt = con.createStatement(); //blah blah blah
                             resultSet = stmt.executeQuery(query); //thực thi và trả về một cục ResultSet, nó là gì thì Google, tui chịu
@@ -127,15 +123,24 @@ public class ManHinhChinhActivity extends AppCompatActivity implements View.OnCl
                             //ResultSet rs = SERVER.executeQuery(query);
                             if(resultSet.next())//nếu trong resultset không null thì sẽ trả về True
                             {
-                                con.close();
-                                Intent intent = new Intent(ManHinhChinhActivity.this, XacThucDiemDanhActivity.class);
-                                intent.putExtra("IDNGUOIDUNG", idnguoidung);
-                                startActivity(intent);
+                                //thêm vào bảng CTDIEMDANH
+                                String diemdanh = "INSERT INTO CTDIEMDANH(BUOITHU, IDNGUOIDUNG, IDLOPMH, NGAYGIO) VALUES ("+part0+", "+id+", "+idlopmh+",(SELECT GETDATE() AS CurrentTime));";
+                                //trên đây là câu truy vấn
+                                Statement dd = con.createStatement(); //blah blah blah
+                                resultSet = dd.executeQuery(diemdanh); //thực thi và trả về một cục ResultSet, nó là gì thì Google, tui chịu
+
+                                con.close();//đóng kết nối
+                                //Intent intent = new Intent(ManHinhChinhActivity.this, XacThucDiemDanhActivity.class);
+                                //intent.putExtra("IDNGUOIDUNG", idnguoidung);
+                                //startActivity(intent);
+
+                                Toast.makeText(this, "Điểm đanh thành công", Toast.LENGTH_LONG).show();
                             }
                             else
                             {
-                                z = "Không có kết nối!";//Lại Tiếng Việt
+                                z = "Không có mã qr trong cơ sở dữ liệu!";//Lại Tiếng Việt
                                 isSuccess = false; //Chạy tới đây là hỏng rồi
+                                con.close();//đóng kết nối
                             }
                         }
                     }
@@ -153,8 +158,6 @@ public class ManHinhChinhActivity extends AppCompatActivity implements View.OnCl
     }
     @Override
     public void onClick(View view) {
-
-
         //initiating the qr code scan
         qrScan.initiateScan();
     }
